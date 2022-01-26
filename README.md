@@ -1,3 +1,4 @@
 # NET30_HW7
 
-Threads, Collections, Timers, Mocks
+.Net+DevOps stream. Home Work 7 Template.
+Topics : Threads, Collections, Timers, Mocks
