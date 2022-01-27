@@ -26,9 +26,44 @@ build:
   tags:
     - docker-shared
 
-tests:
+Exercise1:
   stage: test
   script:
-    - 'dotnet test --no-restore'
+    - 'dotnet test ./Hw7.Tests --filter DisplayName~Exercise1 --no-restore --test-adapter-path:. --logger:"junit;LogFilePath=../artifacts/{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
   tags:
     - docker-shared
+  artifacts:
+    when: always
+    paths:
+      - ./**/*test-result.xml
+    reports:
+      junit:
+        - ./**/*test-result.xml
+
+Exercise2:
+  stage: test
+  script:
+    - 'dotnet test ./Hw7.Tests --filter DisplayName~Exercise2 --no-restore --test-adapter-path:. --logger:"junit;LogFilePath=../artifacts/{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+  tags:
+    - docker-shared
+  artifacts:
+    when: always
+    paths:
+      - ./**/*test-result.xml
+    reports:
+      junit:
+        - ./**/*test-result.xml
+
+Exercise3:
+  stage: test
+  script:
+    - 'dotnet test ./Hw7.Tests --filter DisplayName~Exercise3 --no-restore --test-adapter-path:. --logger:"junit;LogFilePath=../artifacts/{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+  tags:
+    - docker-shared
+  artifacts:
+    when: always
+    paths:
+      - ./**/*test-result.xml
+    reports:
+      junit:
+        - ./**/*test-result.xml
