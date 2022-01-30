@@ -64,7 +64,7 @@ namespace Hw7.Exercise3
             _storage.UpsertCurrencyRate(currencyCode, rate);
 
             // TODO : Uncomment before release
-            //_notifications.NotifyCurrencyRateChanged(currencyCode, rate);
+            _notifications.NotifyCurrencyRateChanged(currencyCode, rate);
         }
     }
 }

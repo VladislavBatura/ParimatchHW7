@@ -89,7 +89,12 @@ namespace Hw7.Tests.Exercise3
             // ICurrencyStorage.UpsertCurrencyRate(...) should returns given rates.
             // More details at https://nsubstitute.github.io/help/getting-started/
 
-            throw new NotImplementedException("Should be implemented by executor");
+            var storage = Substitute.For<ICurrencyStorage>();
+            foreach (var rate in rates)
+            {
+                _ = storage.GetCurrencyRate(rate.Key).Returns(rate.Value);
+            }
+            return storage;
         }
 
         private static ICurrencyStorage GetStorageMockWithException()
@@ -99,7 +104,11 @@ namespace Hw7.Tests.Exercise3
             // ICurrencyStorage.UpsertCurrencyRate(...) should thrown exception.
             // More details at https://nsubstitute.github.io/help/throwing-exceptions/
 
-            throw new NotImplementedException("Should be implemented by executor");
+            var storage = Substitute.For<ICurrencyStorage>();
+            storage
+                .When(x => x.UpsertCurrencyRate(Arg.Any<string>(), Arg.Any<decimal>()))
+                .Do(x => { throw new Exception("Throwed from mock on UpsertCurrencyRates() call"); });
+            return storage;
         }
 
         private static ICurrencyNotifications GetNotificationsMock()
@@ -108,7 +117,7 @@ namespace Hw7.Tests.Exercise3
             // created with nSubstitute only
             // More details at https://nsubstitute.github.io/help/getting-started/
 
-            throw new NotImplementedException("Should be implemented by executor");
+            return Substitute.For<ICurrencyNotifications>();
         }
         #endregion
     }

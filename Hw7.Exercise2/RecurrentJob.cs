@@ -8,12 +8,28 @@
         /// <summary> Running flag. </summary>
         public bool IsRunning { get; private set; }
 
+        private int Times { get; }
+        private int Count { get; set; }
+        private Action<int, object?> Action { get; set; }
+        private object? Context { get; }
+        private Timer? timer { get; set; }
+
+        private RecurrentJob(int times, Action<int, object?> action, object? context)
+        {
+            Times = times;
+            Action = action;
+            IsRunning = true;
+            Context = context;
+            Count = 0;
+        }
+
         /// <summary>
         /// Stops job and disposes all resources.
         /// </summary>
         public void Dispose()
         {
-            throw new NotImplementedException("Should be implemented by executor");
+            IsRunning = false;
+            timer!.Dispose();
         }
 
         /// <summary>
@@ -35,7 +51,40 @@
         /// </exception>
         public static RecurrentJob Run(TimeSpan dueTime, TimeSpan interval, int times, Action<int, object?> job, object? context)
         {
-            throw new NotImplementedException("Should be implemented by executor");
+            if (dueTime < TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(nameof(dueTime), "Delay is below zero");
+            }
+            else if (interval < TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(nameof(interval), "Interval is below zero");
+            }
+            else if (times < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(times), "Executions count below zero");
+            }
+            else if (job is null)
+            {
+                throw new ArgumentNullException(nameof(job), "Job is null");
+            }
+
+            var o = new RecurrentJob(times, job, context);
+
+            var timer = new Timer(Callback!, o, dueTime, interval);
+
+            o.timer = timer;
+            return o;
+        }
+
+        private static void Callback(object state)
+        {
+            var job = state as RecurrentJob;
+            if (job!.Count == job.Times || !job.IsRunning)
+            {
+                job.Dispose();
+            }
+            job!.Action.Invoke(job.Count, job.Context);
+            job.Count++;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Hw7.Tests.Exercise1
@@ -9,12 +10,15 @@ namespace Hw7.Tests.Exercise1
     internal class PrimesLoad
     {
 
+        private ConcurrentDictionary<int, int> _dictionary = new();
+
         /// <summary>
         /// Returns primes cache with all found prime numbers.
         /// </summary>
         public IEnumerable<int> GetPrimesCache()
         {
-            throw new NotImplementedException("Should be implemented by executor");
+            var cache = _dictionary.Keys;
+            return cache;
         }
 
         /// <summary>
@@ -40,7 +44,8 @@ namespace Hw7.Tests.Exercise1
         /// </summary>
         private void AppendPrimesCache(int i)
         {
-            throw new NotImplementedException("Should be implemented by executor");
+            var j = 1;
+            _ = _dictionary.AddOrUpdate(i, j, (k, v) => j++);
         }
 
         /// <summary>

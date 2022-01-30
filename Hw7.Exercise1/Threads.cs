@@ -19,8 +19,33 @@
         /// </exception>
         public static Thread[] StartAll(ParameterizedThreadStart entryPoint, IEnumerable<object> args)
         {
-            throw new NotImplementedException("Should be implemented by executor");
+            if (entryPoint is null || args is null)
+            {
+                throw entryPoint is null ?
+                    new ArgumentNullException(nameof(entryPoint), "Entry poins is null") :
+                    new ArgumentNullException(nameof(args), "Arguments is null");
+            }
+
+            if (args.Any(a => a is null))
+            {
+                throw new ArgumentNullException(nameof(args), "One of the argument is null");
+            }
+
+            var threads = Enumerable
+                .Range(0, args.Count())
+                .Select(t => new Thread(entryPoint))
+                .ToArray();
+
+            var parameters = args.ToArray();
+
+            for (var i = 0; i < threads.Length; i++)
+            {
+                threads[i].Start(parameters[i]);
+            }
+
+            return threads;
         }
+
         /// <summary>
         /// Blocks current thread until all <paramref name="threads"/> will be done.
         /// </summary>
@@ -30,7 +55,15 @@
         /// </exception>
         public static void WaitAll(IEnumerable<Thread> threads)
         {
-            throw new NotImplementedException("Should be implemented by executor");
+            if (threads is null || threads.Any(t => t is null))
+            {
+                throw new ArgumentNullException(nameof(threads), "Threads is null");
+            }
+
+            foreach (var thread in threads)
+            {
+                thread.Join();
+            }
         }
     }
 }
